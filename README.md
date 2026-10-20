@@ -74,28 +74,51 @@ The new site is ready. Until the domain is switched, it's at
 > working, so the change below has to come first.
 
 Reid's DNS is managed at **GoDaddy** (the nameservers are
-`ns51.domaincontrol.com` and `ns52.domaincontrol.com`). Whoever has the
-GoDaddy login makes **one change**.
+`ns51.domaincontrol.com` and `ns52.domaincontrol.com`). The switch is done
+on a call with Sheldon (GitHub side) and Reid (GoDaddy side). It takes one
+record change, and most of the hour is waiting.
 
-### Step 1: Sheldon connects the domain on GitHub (first)
+### Before the call
 
-Sheldon adds `www.reidrichardson.com` as the custom domain in this repo's
-GitHub Pages settings. Nothing visible changes for visitors yet. The only
-effect is that the github.io preview link starts redirecting to
-`www.reidrichardson.com`, which is still the old site.
+- **Sheldon:** signed in to GitHub as `tooshel`, with this page open:
+  https://github.com/tooshel/reidrichardson/settings/pages
+- **Reid:** GoDaddy username, password, and whatever device gets his
+  two-factor codes. Being on a computer with screen sharing makes it easier.
+- Pick a quiet time and allow about an hour.
 
-### Step 2: Change one record at GoDaddy
+### Step 1 (Sheldon): add the domain on GitHub
 
-In GoDaddy, open **reidrichardson.com → DNS** and edit the existing `www`
-record:
+1. On the Pages settings page above, find the **Custom domain** box.
+2. Type `www.reidrichardson.com`. Include `www`; leave out `https://` and
+   any trailing slash. Click **Save**.
+3. GitHub starts a DNS check, and **it will fail at first. That's expected**,
+   because GoDaddy hasn't been changed yet. Leave the domain in place.
+4. GitHub makes a small commit to this repo adding a file named `CNAME`
+   (contents: `www.reidrichardson.com`). Leave it alone; that file is how
+   GitHub remembers the domain.
+5. The **Enforce HTTPS** checkbox will be grayed out. Also expected.
 
-| Type  | Name  | Old value          | New value               |
-|-------|-------|--------------------|-------------------------|
-| CNAME | `www` | `www.wpsplit.com`  | **`tooshel.github.io`** |
+Nothing changes for visitors yet. The github.io preview link now redirects
+to `www.reidrichardson.com`, which is still the old site until Step 2.
 
-That's the whole change. Keep the TTL at its default.
+### Step 2 (Reid): change one record at GoDaddy
 
-### Do NOT touch these
+1. Sign in at godaddy.com and go to **My Products**. Next to
+   **reidrichardson.com**, choose **DNS** (sometimes labeled **Manage DNS**).
+2. In the list of records, find the row with **Type** `CNAME` and **Name**
+   `www`. Click its edit (pencil) icon.
+3. Change the value, then click **Save**:
+
+   | Type  | Name  | Old value          | New value               |
+   |-------|-------|--------------------|-------------------------|
+   | CNAME | `www` | `www.wpsplit.com`  | **`tooshel.github.io`** |
+
+   - **Edit the existing record. Don't add a second `www` record**; there
+     can only be one.
+   - Keep the TTL at its default. A trailing dot on the value
+     (`tooshel.github.io.`) is fine either way.
+
+**Do NOT touch anything else on that page**, especially:
 
 - **The MX records** (`aspmx.l.google.com`, `alt1.aspmx.l.google.com`,
   `alt2.aspmx.l.google.com`, `aspmx2.googlemail.com`,
@@ -105,16 +128,39 @@ That's the whole change. Keep the TTL at its default.
   already forwards to `https://www.reidrichardson.com/`. It keeps working
   as-is and will land visitors on the new site automatically.
 
-### Step 3: Wait, then Sheldon locks in HTTPS
+### Step 3 (both): watch it switch over
 
-- The change usually takes effect within 5 minutes to an hour.
-- Once GitHub sees the new record, it issues a security certificate for the
-  domain automatically. **For a short window (usually under an hour),
-  `https://www.reidrichardson.com` may show a browser security warning**
-  while the certificate is created. This is normal, so do the switch at a
-  quiet time.
-- When the certificate is ready, Sheldon turns on "Enforce HTTPS" and
-  everything is permanent.
+1. **Check that the change is visible**, no tools needed. Open this link
+   and look for the `"data"` value:
+   https://dns.google/resolve?name=www.reidrichardson.com&type=CNAME
+   - `www.wpsplit.com.` means the change hasn't spread yet. Refresh every
+     few minutes.
+   - `tooshel.github.io.` means the world sees the new record. This usually
+     takes 5 minutes to an hour.
+2. **Sheldon:** refresh the GitHub Pages settings page. The DNS check should
+   now pass, and GitHub starts creating the security certificate on its own.
+3. **During the certificate wait**, `https://www.reidrichardson.com` may show
+   a browser security warning. That's normal and usually clears within an
+   hour.
+4. **Sheldon:** once the **Enforce HTTPS** checkbox becomes clickable, tick
+   it. The switch is done.
+
+### If it stalls
+
+- **The dns.google link still says `www.wpsplit.com` after an hour.** The
+  GoDaddy edit didn't save, or a second `www` record was added. Reid
+  re-opens the GoDaddy DNS page and checks that exactly one `www` CNAME
+  exists and it says `tooshel.github.io`.
+- **dns.google shows `tooshel.github.io`, but GitHub's DNS check or the
+  Enforce HTTPS box is still stuck after an hour.** Kick GitHub to look
+  again: in Pages settings, click **Remove** next to the custom domain, then
+  type `www.reidrichardson.com` back in and click **Save**. This has fixed the
+  same stall on other sites in this migration. Each remove and re-add makes
+  GitHub add another `CNAME` commit, so pull before editing the repo again.
+- **Undo everything:** while the old server still exists, setting the
+  GoDaddy `www` record back to `www.wpsplit.com` restores the old site
+  exactly. After the old server is gone, there's nothing to go back to,
+  which is one more reason to switch before the shutdown.
 
 ### Checklist after the switch
 
@@ -122,14 +168,7 @@ That's the whole change. Keep the TTL at its default.
       new site (the nav includes **Videos**)
 - [ ] `reidrichardson.com` (no www) lands on the same site
 - [ ] Selected Works shows the Artwork Archive gallery
-- [ ] Email to Reid still arrives
-
-### If something goes wrong
-
-While the old server still exists, setting the `www` record back to
-`www.wpsplit.com` restores the old site exactly. After the old server is
-gone, there's nothing to go back to, which is one more reason to switch
-before the shutdown.
+- [ ] Email to Reid still arrives (send him a test message)
 
 ### Optional, later
 
