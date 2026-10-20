@@ -1,0 +1,151 @@
+/* Reid Richardson — navigation refinement for the static edition.
+   Replaces the stock theme's gray gradient band with a quiet gallery nav.
+   Loaded after skin-*.css on bio, galleries, and selected-works. */
+
+/* The band itself: white, one hairline rule, no gradient costume */
+.fl-page .fl-page-nav-wrap {
+  background: #fff !important;
+  filter: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid #ececec !important;
+  padding: 0 !important;
+}
+
+/* The fixed header that appears on scroll keeps a touch of separation */
+.fl-page-header-fixed {
+  background: #fff !important;
+  border-bottom: 1px solid #ececec !important;
+  box-shadow: none !important;
+}
+.fl-page-header-fixed .fl-page-header-wrap {
+  background: #fff !important;
+}
+.fl-page-header-fixed .fl-page-nav-wrap {
+  border-bottom: 0 !important;
+}
+
+/* Links: small caps-tracked labels, warm gray at rest, ink on hover */
+.fl-page-nav .navbar-nav > li > a.nav-link {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #6e6e6e !important;
+  background: transparent !important;
+  padding: 24px 19px;
+  transition: color 0.15s ease-out;
+}
+.fl-page-nav .navbar-nav > li > a.nav-link:hover {
+  color: #111 !important;
+}
+
+/* Current page: ink with a thin underline held well below the text */
+.fl-page-nav .navbar-nav > li.current_page_item > a.nav-link,
+.fl-page-nav .navbar-nav > li.current-menu-item > a.nav-link {
+  color: #111 !important;
+  text-decoration: underline;
+  text-underline-offset: 9px;
+  text-decoration-thickness: 1px;
+}
+
+/* Keyboard focus carries the same ink language */
+.fl-page-nav .navbar-nav > li > a.nav-link:focus-visible {
+  outline: 1px solid #111;
+  outline-offset: 4px;
+  color: #111 !important;
+}
+
+/* The WordPress search is dead on a static site — remove it */
+.fl-page-nav-search,
+.fl-page-header .fl-search,
+.fl-page-nav .fl-search-button {
+  display: none !important;
+}
+
+/* Mobile: the Menu toggle speaks the same voice as the links */
+.fl-page-nav .navbar-toggle,
+.fl-page-nav .navbar-toggler {
+  background: none !important;
+  border: 0 !important;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #6e6e6e !important;
+  padding: 18px 16px;
+  transition: color 0.15s ease-out;
+}
+.fl-page-nav .navbar-toggle:hover,
+.fl-page-nav .navbar-toggler:hover {
+  color: #111 !important;
+}
+.fl-page-nav .navbar-toggle span,
+.fl-page-nav .navbar-toggler span {
+  color: inherit !important;
+}
+.fl-page-nav .navbar-toggle:focus-visible,
+.fl-page-nav .navbar-toggler:focus-visible {
+  outline: 1px solid #111;
+  outline-offset: 2px;
+}
+
+/* Collapsed mobile menu: clean white sheet, centered entries */
+@media (max-width: 767px) {
+  .fl-page-nav .fl-page-nav-collapse {
+    border: 0 !important;
+    background: #fff !important;
+  }
+  .fl-page-nav .navbar-nav > li > a.nav-link {
+    padding: 14px 16px;
+  }
+  .fl-page-nav .navbar-nav > li.current_page_item > a.nav-link,
+  .fl-page-nav .navbar-nav > li.current-menu-item > a.nav-link {
+    text-underline-offset: 6px;
+  }
+}
+
+/* Footer: same voice as the nav, never Verdana */
+.fl-page-footer {
+  border-top: 1px solid #ececec !important;
+  background: #fff !important;
+}
+.fl-page-footer .fl-page-footer-text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #6e6e6e !important;
+  padding: 26px 0 !important;
+}
+
+/* Videos page: the films carry the page; chrome stays out of the way */
+.reid-video {
+  max-width: 860px;
+  margin: 0 0 56px;
+}
+.reid-video-frame {
+  aspect-ratio: 16 / 9;
+  background: #f4f4f4;
+}
+.reid-video-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.reid-video-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #333;
+  margin: 14px 0 2px;
+}
+.reid-video-sub {
+  font-size: 13px;
+  color: #6e6e6e;
+  margin: 0;
+}
+
+/* Text selection belongs to the site, not the browser default */
+::selection {
+  background: #1e1e1e;
+  color: #fff;
+}
